@@ -23,9 +23,14 @@ public class Plugin : BaseUnityPlugin
 {
     public static int currentRankInt = -1;
     public static float currentRankFloat = -1f;
-    public float pollingTime = 0.050f; //in seconds
+    public float pollingTime = 0.5f; //in seconds
     string DefaultParentFolder = $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}";
     string path;
+
+    public void openRootFolder()
+    {
+        Application.OpenURL(DefaultParentFolder);
+    }
     private void Awake()
     {       
         //Harmony harmony = new Harmony("UltraRGBLighting");
@@ -34,9 +39,16 @@ public class Plugin : BaseUnityPlugin
         var config = PluginConfigurator.Create("UltraRGBLighting", "UltraRGBLighting");
         config.SetIconWithURL($"{Path.Combine(DefaultParentFolder!, "icon.png")}");
 
-        ConfigHeader infoHeader = new ConfigHeader(config.rootPanel, "Polling rate refers to the amount of times a second that the style rank is recorded. High polling rates have a negative performance impact.");
-        infoHeader.textSize = 12;
-        FloatField pollingRateField = new FloatField(config.rootPanel, "Polling Rate (Hz)", "pollingRate", 30, 0.001f, 1000f);
+        ConfigHeader infoHeader = new ConfigHeader(config.rootPanel, "You must open UltraRGBLighting.jar (provided in the mod directory) and OpenRGB (must be downloaded from their site) for this mod to do anything. UltraRGBLighting.jar provides configuration options. Consult the readme if confused.");
+        infoHeader.textSize = 14;
+        infoHeader.textColor = Color.red;
+
+        ButtonField openFolderField = new ButtonField(config.rootPanel, "Open Mod Folder", "button.openfolder");
+        openFolderField.onClick += new ButtonField.OnClick(openRootFolder);
+
+        ConfigHeader infoHeader2 = new ConfigHeader(config.rootPanel, "Polling rate refers to the amount of times a second that the style rank is recorded. High polling rates have a negative performance impact, and at a certain point start having a negative effect. A value around 40 is strongly reccomended.");
+        infoHeader2.textSize = 12;
+        FloatField pollingRateField = new FloatField(config.rootPanel, "Polling Rate (Hz)", "pollingRate", 40, 0.001f, 1000f);
         pollingRateField.onValueChange += (FloatField.FloatValueChangeEvent e) => {pollingTime = 1f / e.value;};
         pollingTime = 1f / pollingRateField.value;
 
@@ -61,7 +73,7 @@ public class Plugin : BaseUnityPlugin
         //writing to file every frame has a noticeable performance impact, so we need to poll.
         if(timeElapsed > pollingTime)
         {
-            File.WriteAllText(path, currentRankFloat.ToString()); 
+            File.WriteAllText(path, currentRankFloat.ToString() + "\n" + (pollingTime * 1000)); 
             timeElapsed = 0f;
         }
     }
