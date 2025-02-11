@@ -1,7 +1,9 @@
 # WARNING
 
 This mod is more difficult than others to use.
+
 The .jar companion file is nessecary. I will confirm when I can, but I'm not sure whether r2modman will allow .jar files to be downloaded.
+
 This mod is in development. Expect issues. Raise an issue on the github or ontact me at discord: daemon8363, preferrably in #ultrakill-modding if you encounter problems.
 
 # REQUIREMENTS
