@@ -1,10 +1,10 @@
 # WARNING
 
-This mod is more difficult than others to use.
-
-The .jar companion file is nessecary. I will confirm when I can, but I'm not sure whether r2modman will allow .jar files to be downloaded.
+This mod is more convoluted than others to use.
 
 This mod is in development. Expect issues. Raise an issue on the github or ontact me at discord: daemon8363, preferrably in #ultrakill-modding if you encounter problems.
+
+Preference files will be overwritten if you keep the companion app / pref file in the mod directory when this mod is updated for now. Be careful before downloading an update, and sorry!
 
 # REQUIREMENTS
 
@@ -32,15 +32,17 @@ The file "output.txt" provides the style ranks in decimal, from 0 to 7 and with 
 
 # HOW TO USE
 
-You must first start OpenRGB and make sure that it can access whatever RGB devices you need (if it doesn't work the first time, run it in admin mode). 
+1. Start OpenRGB and make sure that it can access whatever RGB devices you need (if it doesn't work the first time, run it in admin mode).
+ 
+2. In OpenRGB, switch to the "SDK Server" tab and click the "Start Server" button. The host should be 0.0.0.0, and the port 6742 (these are the default options). 
 
-Then in OpenRGB, switch to the "SDK Server" tab and click the "Start Server" button. The host should be 0.0.0.0, and the port 6742 (these are the default options). 
+3. Run the companion app, located in the mod plugin's directory (folder is openable from this mod's option menu ingame). 
 
-Then, you must run the companion app, located in the mod plugin's directory (folder is openable from this mod's option menu ingame). 
+4. Type in the relative or absolute file path of the output.txt file found in the mod directory. By default, "output.txt" should work (don't type the "").
 
-You must then type in the relative or absolute file path of output.txt in the mod directory. By default, "output.txt" should work.
+5. Type in the indexes of the device(s) you want the companion app to use. The index is zero-indexed and should be in the same order as listed in OpenRGB. Typing "ALL" will connect all available devices.
 
-Then type in the indexes of the device(s) you want the companion app to use and then click "connect". The index is zero-indexed and should be in the same order as listed in OpenRGB. Typing "ALL" will connect all available devices.
+6. Click "Connect"
 
 From there, it should work in game.
 
