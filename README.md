@@ -10,7 +10,8 @@ This mod is in development. Expect issues. Raise an issue on the github or ontac
 
 This mod (you must have it downloaded and enabled) 
 
-The companion app for this mod (accessible from the plugin configurator by opening the folder) or from here: https://github.com/daemon251/UltrakillUltraRGBLighting/blob/main/UltrakillCompanion/release/UltraRGBLightingCompanion.jar
+The companion app for this mod (accessible from the plugin configurator by opening the folder) or from here: 
+https://github.com/daemon251/Ultrakill-UltraRGBLighting/tree/main/UltrakillCompanion/release (the preferences file is also required for now)
 
 OpenRGB: https://openrgb.org/
 
