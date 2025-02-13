@@ -1,32 +1,26 @@
 package UltraRGBLightingCompanion;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.FontFormatException;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.URLDecoder;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import io.gitlab.mguimard.openrgb.entity.*;
 import io.gitlab.mguimard.openrgb.client.*;
-import io.gitlab.mguimard.openrgb.utils.*;
+//import io.gitlab.mguimard.openrgb.utils.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
 //TODO
-//currentTimeMillis
-//no need to enter file path
-//application close behavior
 //bugs
 //naming
 //altColors sets colors anyway... refactor
-//handle fileNotFound
+//indexes green if letter... bad
 
 public class Start 
 {
@@ -56,7 +50,7 @@ public class Start
 	//*PREFERENCE LOADER START*//
 	//*************************//
 	
-	public static String outputTXTpath;
+	public static String outputTXTpath = "";
 	
 	public static Color[] colors = {styleColors[0], styleColors[1], styleColors[2], styleColors[3], styleColors[4], styleColors[5], styleColors[6], styleColors[7], styleColors[8]};
 	public static Color[] altColors = {styleColors[0], styleColors[1], styleColors[2], styleColors[3], styleColors[4], styleColors[5], styleColors[6], styleColors[7], styleColors[8]};
@@ -93,12 +87,9 @@ public class Start
 	
 	public static Color currentColorBase = styleColors[0];
 	public static Color currentColorAlt = styleColors[0];
-
-	public static Timer timerMS = new Timer();
-	public static int timeInMS = 0; //wait... isnt this just currentTimeMillis?
 	
 	public static String jarPath;
-	public static String prefsPath;
+	public static String prefsPath = "";
 	public static boolean prefsFileFound = false;
 	
 	//static int ledCount = 0;
@@ -113,38 +104,27 @@ public class Start
 		int slashIndex = prefsPath.lastIndexOf("/");
 		prefsPath = prefsPath.substring(0, slashIndex + 1); 
 		prefsPath += "UltraRGBLightingPrefs.txt";
-		//System.out.println(prefsPath);
+		//System.out.println("Preference Path " + prefsPath);
 		
 		//prefsPath = "C:\\Users\\willb\\Downloads\\UltraRGBLightingPrefs.txt"; //use when building in IDE
 		
 		if(new File(prefsPath).isFile())
 		{
+			System.out.println("Preferences file exists.");
 			prefsFileFound = true;
-			
 		}
 		else
 		{
-			System.out.println("Preferences file was not found. Create file UltraRGBLightingPrefs.txt next to the .jar if it does not exist.");
+			System.out.println("Preferences file was not found. Creating.");
+			new File("UltraRGBLightingPrefs.txt").createNewFile();
+			try{PrefsManager.writeDefaultPrefs();} catch(Exception ex) {System.out.println("Error making preferences file");ex.printStackTrace();} //write default prefs to populate the file
 		}
 		
 		client = new OpenRGBClient("localhost", 6742, "UltraRGBLightingCompanion");
-
-		if(prefsFileFound) {PrefsManager.readScalePref();}
+		try {if(prefsFileFound) {PrefsManager.readScalePref();}} catch (Exception ex) {System.out.println("Error reading preferences file"); ex.printStackTrace();}
+		
 		Display.createWindow();
-		if(prefsFileFound) {PrefsManager.readPrefs();} //has to come after the window so everything is init
-		
-		//try {outputTXTpath = Start.class.getProtectionDomain().getCodeSource().getLocation().toURI().toString(); System.out.println(outputTXTpath);} 
-		//catch (URISyntaxException e) {e.printStackTrace();}
-		
-		timerMS.schedule(new TimerTask() 
-		{
-			@Override
-			public void run() 
-			{
-				timeInMS += 1;
-			}
-		
-		}, 0, 1);
+		try {if(prefsFileFound) {PrefsManager.readPrefs();}} catch (Exception ex) {System.out.println("Error reading preferences file"); ex.printStackTrace();} //has to come after the window so everything is init
 		
 		timer.schedule(new TimerTask() 
 		{
@@ -265,7 +245,7 @@ public class Start
 		double intensity = pulsateIntensities[index];
 		double frequency = pulsateFreqs[index] * (2.0 * Math.PI) / 10.0; //amount of tenths a sin cycle per second
 		if(frequency == 0.0) {return colors;}
-		Double currentMult = (1 - intensity / 200.0) - (intensity / 200.0) * Math.sin(frequency * timeInMS / 1000f);
+		Double currentMult = (1 - intensity / 200.0) - (intensity / 200.0) * Math.sin(frequency * System.currentTimeMillis() / 1000f);
 		if(currentMult > 1) {currentMult = 1.0;}
 		if(currentMult < 0) {currentMult = 0.0;}
 		
@@ -325,7 +305,7 @@ public class Start
 		Color altColor = currentColorAlt;
 		Color color = currentColorBase;
 		if(frequency == 0.0) {return colorsBoard;}
-		Double currentFraction = Math.sin(frequency * timeInMS / 1000f) / 2.0 + 0.5;
+		Double currentFraction = Math.sin(frequency * System.currentTimeMillis() / 1000f) / 2.0 + 0.5;
 		if(currentFraction > 1) {currentFraction = 1.0;}
 		if(currentFraction < 0) {currentFraction = 0.0;}
 		

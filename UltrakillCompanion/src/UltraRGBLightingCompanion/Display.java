@@ -11,7 +11,6 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -114,6 +113,7 @@ public class Display
 		     {
 		    	 System.out.println("UltraRGBLightingCompanion Saving Prefs");
 		    	 try {if(Start.prefsFileFound) {PrefsManager.writePrefs();}} catch (IOException ex) {ex.printStackTrace();}
+		    	 System.exit(0); //hopefully this causes less ghost processes
 		     }
 		});
 		
@@ -125,6 +125,7 @@ public class Display
 		deviceIndexField.setBackground(Color.black);
 		deviceIndexField.setCaretColor(Color.white);
 		deviceIndexField.setHorizontalAlignment(JLabel.CENTER);
+		deviceIndexField.setText("ALL");
 		frame.add(deviceIndexField);
 		
 		JLabel outputTXTpathLabel = new JLabel(" OUTPUT.TXT LOCATION:");
@@ -143,7 +144,7 @@ public class Display
 		outputTXTpathField.setBackground(Color.black);
 		outputTXTpathField.setCaretColor(Color.white);
 		outputTXTpathField.setHorizontalAlignment(JLabel.CENTER);
-		outputTXTpathField.setText("Preferences file not found. Add UltraRGBLightingPrefs.txt next to the .jar file if it does not exist."); //overriden if prefs are loaded
+		outputTXTpathField.setText("output.txt"); //overriden if prefs are loaded
 		frame.add(outputTXTpathField);
 		
 		JLabel deviceIndexLabel = new JLabel(" DEVICE INDEXES ADDED:");

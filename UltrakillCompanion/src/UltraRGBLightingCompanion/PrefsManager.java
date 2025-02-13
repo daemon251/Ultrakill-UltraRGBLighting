@@ -16,13 +16,17 @@ public class PrefsManager
 		Scanner sc = new Scanner(prefsFile);
 		
 		float fl = 1.0f;
+		int i = 0;
 		while(sc.hasNext() == true) //gets last float
 		{
+			if(i > 1000) {System.out.println("Something is wrong with the preferences file."); break;}
+			i++;
 			if(sc.hasNextFloat()) {fl = sc.nextFloat();}
 			else {sc.next();}
 		}
 		
 		Display.globalScale = fl;
+		sc.close();
 	}
 	
 	public static void readPrefs() throws IOException
@@ -90,6 +94,76 @@ public class PrefsManager
 		}
 	}
 	
+	public static void writeDefaultPrefs() throws IOException
+	{
+		try
+		{
+			//note that this will overwrite the file, not add on to it.
+			FileWriter fw = new FileWriter(Start.prefsPath);
+			for(int i = 0; i < 9; i++)
+			{
+				fw.write(Display.convertColorToHexadecimal(Start.colors[i]) + " ");
+			}
+			fw.write("\n");
+			
+			for(int i = 0; i < 9; i++)
+			{
+				fw.write(Display.convertColorToHexadecimal(Start.altColors[i]) + " ");
+			}
+			fw.write("\n");
+			
+			fw.write("false");
+			fw.write("\n");
+			
+			fw.write("output.txt");
+			fw.write("\n");
+			
+			fw.write("ALL");
+			fw.write("\n");
+			
+			for(int i = 0; i < 9; i++)
+			{
+				fw.write(0 + " ");
+			}
+			fw.write("\n");
+			
+			for(int i = 0; i < 9; i++)
+			{
+				fw.write(0 + " ");
+			}
+			fw.write("\n");
+			
+			for(int i = 0; i < 9; i++)
+			{
+				fw.write(0 + " ");
+			}
+			fw.write("\n");
+			
+			for(int i = 0; i < 9; i++)
+			{
+				fw.write(0 + " ");
+			}
+			fw.write("\n");
+			
+			for(int i = 0; i < 9; i++)
+			{
+				fw.write(0 + " ");
+			}
+			fw.write("\n");
+			
+			fw.write(Display.xDimensionBase + "\n");
+			fw.write(Display.yDimensionBase + "\n");
+			fw.write(Display.globalScale + "\n");
+			
+			fw.close();
+		}
+		catch(Exception ex)
+		{
+			System.out.println("Is the config file in the correct place?");
+			ex.printStackTrace();
+		}
+	}
+	
 	public static void writePrefs() throws IOException
 	{
 		try
@@ -119,14 +193,14 @@ public class PrefsManager
 			}
 			fw.write("\n");
 			
-			fw.write(Display.deviceIndexField.getText());
-			if(Display.deviceIndexField.getText().equals(""))
+			if(Display.deviceIndexField != null)
 			{
-				fw.write("NONE");
+				fw.write(Display.deviceIndexField.getText());
+				if(Display.deviceIndexField.getText().equals("")) {fw.write("NONE");}
 			}
 			fw.write("\n");
 			
-			Start.determineAdvancedColorSettings();
+			try{Start.determineAdvancedColorSettings();} catch (Exception ex) {}
 			for(int i = 0; i < 9; i++)
 			{
 				fw.write(Start.pulsateIntensities[i] + " ");
@@ -168,6 +242,5 @@ public class PrefsManager
 			System.out.println("Is the config file in the correct place?");
 			ex.printStackTrace();
 		}
-		//note that files cannot be created without permission
 	}
 }
