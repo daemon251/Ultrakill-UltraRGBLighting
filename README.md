@@ -4,14 +4,11 @@ This mod is more convoluted than others to use.
 
 This mod is in development. Expect issues. Raise an issue on the github or ontact me at discord: daemon8363, preferrably in #ultrakill-modding if you encounter problems.
 
-Preference files will be overwritten if you keep the companion app / pref file in the mod directory when this mod is updated for now. Be careful before downloading an update, and sorry!
-
 # REQUIREMENTS
 
 This mod (you must have it downloaded and enabled) 
 
-The companion app for this mod (accessible from the plugin configurator by opening the folder) or from here: 
-https://github.com/daemon251/Ultrakill-UltraRGBLighting/tree/main/UltrakillCompanion/release (the preferences file is also required for now)
+The companion app for this mod (accessible from the plugin configurator by opening the folder) 
 
 OpenRGB: https://openrgb.org/
 
@@ -40,7 +37,7 @@ The file "output.txt" provides the style ranks in decimal, from 0 to 7 and with 
 
 4. Type in the relative or absolute file path of the output.txt file found in the mod directory. By default, "output.txt" should work (don't type the "").
 
-5. Type in the indexes of the device(s) you want the companion app to use. The index is zero-indexed and should be in the same order as listed in OpenRGB. Typing "ALL" will connect all available devices.
+5. Type in the indexes of the device(s) you want the companion app to use. Typing "ALL" will connect all available devices. If you want to only do it for specific devices, you have to type in their device index (starting from zero), which follows the order that they are listed in OpenRGB
 
 6. Click "Connect"
 
@@ -52,3 +49,4 @@ If you want to have different devices have different color schemes, you will nee
 Every instance needs to be located in a different location with a corresponding UltraRGBLightingPrefs.txt if you need it to save values.
 The program currently will not generate the preferences file by itself (and will error if its malformed), which means you need to make a proper copy for each one.
 
+The .jar file can be downloaded here if needed: https://github.com/daemon251/Ultrakill-UltraRGBLighting/tree/main/UltrakillCompanion/release 
