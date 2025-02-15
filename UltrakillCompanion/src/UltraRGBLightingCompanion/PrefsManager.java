@@ -47,7 +47,7 @@ public class PrefsManager
 			{
 				Start.altColors[i] = Display.convertHexadecimalToColor(sc.next());
 				Display.altColorText[i] = ""; //done so it isnt null... spaghetti
-				Display.altColorTextfields[i].setText(Display.convertColorToHexadecimal(Start.colors[i]));
+				Display.altColorTextfields[i].setText(Display.convertColorToHexadecimal(Start.altColors[i]));
 			}
 			Start.gradientColors = sc.nextBoolean();
 			if(Start.gradientColors == true) {Display.gradientButton.setIcon(new ImageIcon(Display.checkboxFullImage));}
@@ -169,7 +169,6 @@ public class PrefsManager
 		try
 		{
 			//note that this will overwrite the file, not add on to it.
-			//FileWriter fw = new FileWriter("C:\\Users\\willb\\Downloads\\UltraRGBLightingPrefs.txt"); //change
 			FileWriter fw = new FileWriter(Start.prefsPath);
 			for(int i = 0; i < 9; i++)
 			{

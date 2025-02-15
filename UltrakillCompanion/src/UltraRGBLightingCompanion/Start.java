@@ -400,7 +400,6 @@ public class Start
 	        } 
 	        catch (Exception e) 
 	        {
-		        //System.out.println("An exception occured with OpenRGB with device index of " + deviceIndex );
 		        e.printStackTrace();
 		        return;
 	        }
