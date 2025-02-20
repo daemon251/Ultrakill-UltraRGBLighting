@@ -125,6 +125,7 @@ public class Start
 		
 		Display.createWindow();
 		try {if(prefsFileFound) {PrefsManager.readPrefs();}} catch (Exception ex) {System.out.println("Error reading preferences file"); ex.printStackTrace();} //has to come after the window so everything is init
+		//Display.createWindow();
 		
 		timer.schedule(new TimerTask() 
 		{

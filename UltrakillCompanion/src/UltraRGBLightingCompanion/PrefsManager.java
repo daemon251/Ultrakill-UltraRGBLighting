@@ -1,5 +1,6 @@
 package UltraRGBLightingCompanion;
 
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -26,6 +27,10 @@ public class PrefsManager
 		}
 		
 		Display.globalScale = fl;
+		if(Display.globalScale > 6) {Display.globalScale = 6;} //prevents absurd values
+		//prevents scale going above what it should be on load. 
+		if(Display.xDimensionBase * Display.globalScale > Toolkit.getDefaultToolkit().getScreenSize().getWidth()) {Display.globalScale = (float)Toolkit.getDefaultToolkit().getScreenSize().getWidth() / Display.xDimensionBase;}
+		if(Display.yDimensionBase * Display.globalScale > Toolkit.getDefaultToolkit().getScreenSize().getHeight()) {Display.globalScale = (float)Toolkit.getDefaultToolkit().getScreenSize().getHeight() / Display.yDimensionBase;}
 		sc.close();
 	}
 	
