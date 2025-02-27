@@ -1,5 +1,7 @@
 # WARNING
 
+Updated for ULTRA_REVAMP.
+
 This mod is more convoluted than others to use.
 
 This mod is in development. Expect issues. Raise an issue on the github or ontact me at discord: daemon8363, preferrably in #ultrakill-modding if you encounter problems.
