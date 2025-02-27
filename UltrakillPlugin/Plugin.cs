@@ -18,7 +18,7 @@ using PluginConfig.API.Functionals;
 
 namespace UltraRGBLighting;
 
-[BepInPlugin("UltraRGBLighting", "UltraRGBLighting", "0.0.1")]
+[BepInPlugin("UltraRGBLighting", "UltraRGBLighting", "1.0.0")]
 public class Plugin : BaseUnityPlugin
 {
     public static int currentRankInt = -1;
