@@ -10,7 +10,7 @@ This mod is in development. Expect issues. Raise an issue on the github or ontac
 
 The Ultrakill mod (you must have it downloaded and enabled) 
 
-The companion app for this mod (accessible in the mod's directory folder which can be opened ingame from the plugin configurator section) 
+The companion app for this mod (accessible in the mod's directory folder which can be opened ingame from the plugin configurator section). The version is ONLY supported for 0.9 at time of writing. 0.9+ will not work, lower versions might not work either.
 
 OpenRGB: https://openrgb.org/
 
