@@ -14,6 +14,7 @@ import io.gitlab.mguimard.openrgb.client.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Scanner;
 
 //TODO
@@ -147,6 +148,7 @@ public class Start
 		{
 			File file = new File(outputTXTpath);
 		    Scanner scanner = new Scanner(file);
+		    scanner.useLocale(Locale.US); //nessecary because in EU / other, comma is used for decimal point instead, and we only use period when we wrote to file from the plugin.
 		    while (scanner.hasNextLine()) 
 		    {
 		    	styleRank = scanner.nextFloat();
@@ -287,7 +289,7 @@ public class Start
 			if(flickerValuesArray != null)
 			{
 				double currentMult = flickerValuesArray[i];
-				// getColor() & 0xff turns the byte into an unsigned "int". If you just read the byte normally it gives you unsigned "int" which is not helpful.
+				// getColor() & 0xff turns the byte into an unsigned "int". If you just read the byte normally it gives you signed "int" which is not helpful.
 				colors[i] = new OpenRGBColor((int)(currentMult * (colors[i].getRed() & 0xff)), (int)(currentMult * (colors[i].getGreen() & 0xff)), (int)(currentMult * (colors[i].getBlue() & 0xff)));
 			}
 		}
