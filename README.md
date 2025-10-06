@@ -1,3 +1,7 @@
+# OVERVIEW
+
+This mod gives users a way to change the color of any RGB device based on the current style rank or upon game events such as killing enemies, losing hp, etc.
+
 # WARNING
 
 Mod is updated for ULTRA_REVAMP. As of writing, you *must* have HideManagerGameObject set to true in BepInEx.cfg.
@@ -24,11 +28,4 @@ OpenRGB (use v0.9): https://openrgb.org/		Releases: https://openrgb.org/releases
 
 3. In the plugin configurator menu for the plugin, set up your options. Then click the "Connect" button.
 
-# OVERVIEW
-
-This mod gives users a way to change the color of any RGB device with the current style rank in Ultrakill.
-
-
-
-# ADVANCED
 
