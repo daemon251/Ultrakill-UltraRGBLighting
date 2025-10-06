@@ -1,3 +1,7 @@
+## WARNING
+
+This is the old version I have kept up here, don't use it pls.
+
 # WARNING
 
 Updated for ULTRA_REVAMP.
