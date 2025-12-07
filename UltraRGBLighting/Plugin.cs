@@ -473,6 +473,7 @@ public class Plugin : BaseUnityPlugin
                     for(int i = 0; i < cArr.Length; i++)
                     {
                         cArr[i] = colorsBoard[deviceIndex][i];
+                        
                     }
 
                     client.UpdateLeds(deviceIndex, cArr);
@@ -484,8 +485,16 @@ public class Plugin : BaseUnityPlugin
                 {
                     if(Time.realtimeSinceStartup > nextTimeAttemptAutoconnect)
                     {
-                        ModConfig.connectToOpenRGB();
                         nextTimeAttemptAutoconnect = Time.realtimeSinceStartup + 15f;
+                        try
+                        {
+                            ModConfig.connectToOpenRGB();
+                        }
+                        catch (Exception e)
+                        {
+                            logger.LogInfo("Could not automatically connect to OpenRGB for some reason... printing stack trace\n");
+                            logger.LogInfo(e.ToString());
+                        }
                     }
                 }
             }
