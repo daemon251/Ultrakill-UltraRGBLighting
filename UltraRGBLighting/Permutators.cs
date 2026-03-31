@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace UltraRGBLighting;
 
-public enum PermutatorCause {None, RecentKills, RecentDamage, RecentStyle, OnStyleGain, OnRankGain, OnRankLose, OnKill, OnDamage, OnTakeDamage, OnPlayerDeath, Always}
+public enum PermutatorCause {None, RecentKills, RecentDamage, RecentStyle, OnStyleGain, OnRankGain, OnRankLose, OnKill, OnDamage, OnTakeDamage, OnPlayerDeath, OnTrueStop, Always}
 //public enum PermutatorEffect {None, Colorfy, ColorfyCheckerboard, CheckerboardInverseColor, InverseColors, Brighten}
 public enum FadeEnum {Linear, NoFade, SquareRoot, Quadratic, PassIfAboveHalf, PassIfBelowHalf}
 public class Permutator
@@ -25,24 +25,25 @@ public class Permutator
 }
 public class Permutators
 {
-    public static float lastTimeStyleGain = -1f; //
-    public static float lastTimeRankGain = -1f; //
-    public static float lastTimeRankLose = -1f; //
-    public static float lastTimeKill = -1f; //
-    public static float lastTimeDamage = -1f; //
-    public static float lastTimeOnTakeDamage = -1f; //
-    public static float lastTimePlayerDeath = -1f; //
+    public static float lastTimeStyleGain = -1f; 
+    public static float lastTimeRankGain = -1f; 
+    public static float lastTimeRankLose = -1f; 
+    public static float lastTimeKill = -1f; 
+    public static float lastTimeDamage = -1f; 
+    public static float lastTimeOnTakeDamage = -1f; 
+    public static float lastTimePlayerDeath = -1f; 
+    public static float lastTimeTruestop = -1f;
 
     public static List<float> damageDealtThisTick = new List<float>();
-    public static float lastDamage = -1f; //
-    public static float lastOnTakeDamage = -1f; //
-    public static bool lastKillBig = false; //
+    public static float lastDamage = -1f; 
+    public static float lastOnTakeDamage = -1f; 
+    public static bool lastKillBig = false; 
     public static List<float> styleGainedThisTick = new List<float>();
-    public static float lastStyleGain = -1f; //
+    public static float lastStyleGain = -1f; 
 
-    public static float recentKills = 0f; //
-    public static float recentDamage = 0f; //
-    public static float recentStyle = 0f; //
+    public static float recentKills = 0f; 
+    public static float recentDamage = 0f; 
+    public static float recentStyle = 0f; 
 
 
     static int hp = 0;
@@ -127,6 +128,11 @@ public class Permutators
                 if(lastTimeKill < 0) {continue;}
                 timeDif = Time.realtimeSinceStartup - lastTimeKill;
                 if(scale) {if(lastKillBig) {lengthMult = 2f;}}
+            }
+            else if(pc == PermutatorCause.OnTrueStop) 
+            {
+                if(lastTimeTruestop < 0) {continue;}
+                timeDif = Time.realtimeSinceStartup - lastTimeTruestop;
             }
             else if(pc == PermutatorCause.OnDamage) 
             {
@@ -267,6 +273,16 @@ public class Permutators
         private static void Prefix()
         {
             lastTimeRankLose = Time.realtimeSinceStartup;
+        }
+    }
+
+    [HarmonyPatch(typeof(TimeController), "TrueStop")]
+    public class TrueStopPatch
+    {
+        [HarmonyPrefix]
+        private static void Prefix(ref float length)
+        {
+            lastTimeTruestop = Time.realtimeSinceStartup;
         }
     }
 

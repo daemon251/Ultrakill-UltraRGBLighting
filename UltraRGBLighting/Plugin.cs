@@ -18,6 +18,8 @@ using PluginConfig.API.Functionals;
 
 using OpenRGB.NET;
 using BepInEx.Logging;
+using System.Threading;
+using Mono.Cecil;
 
 namespace UltraRGBLighting;
 
@@ -31,6 +33,7 @@ public class Plugin : BaseUnityPlugin
     public static ManualLogSource logger = null;
     public static System.Random random = new System.Random();
     public static bool modEnabled = false;
+    //public static bool useSecondaryThread = false;
     public static bool connected = false;
     public static int currentRankInt = 0;
     public static float currentRankFloat = 0f;
@@ -38,6 +41,17 @@ public class Plugin : BaseUnityPlugin
     public static styleRankColoringScheme[,] styleRankColorSettings = new styleRankColoringScheme[4, 9];
     public static Dictionary<int, deviceColoringScheme> deviceColorSettings = new Dictionary<int, deviceColoringScheme>();
     public static Dictionary<int, List<OpenRGB.NET.Color>> colorsBoard = new Dictionary<int, List<OpenRGB.NET.Color>>();
+    //public static Thread secondaryThread;
+    /*private void secondaryThreadFunction()
+    {
+        while(true)
+        {
+            if(true == true)
+            {
+                mainLogic(); //umm can I just do this...???
+            }
+        }
+    }*/
     private void Awake()
     {       
         Harmony harmony = new Harmony("UltraRGBLighting");
@@ -57,6 +71,9 @@ public class Plugin : BaseUnityPlugin
 
         ModConfig.createConfig();
         logger = new ManualLogSource("UltraRGBLighting"); BepInEx.Logging.Logger.Sources.Add(logger);
+
+        //secondaryThread = new Thread(secondaryThreadFunction);
+        //secondaryThread.Start();
 
         logger.LogInfo("UltraRGBLighting started!");
     }
@@ -381,14 +398,15 @@ public class Plugin : BaseUnityPlugin
     {
         if(deviceColorSettings.ContainsKey(deviceIndex))
         {
-            if(deviceColorSettings[deviceIndex].scheme == styleRankColoringSchemeEnum.Scheme1 && deviceColorSettings[deviceIndex].enabled){return 0;}
-            else if(deviceColorSettings[deviceIndex].scheme == styleRankColoringSchemeEnum.Scheme2 && deviceColorSettings[deviceIndex].enabled){return 1;}
-            else if(deviceColorSettings[deviceIndex].scheme == styleRankColoringSchemeEnum.Scheme3 && deviceColorSettings[deviceIndex].enabled){return 2;}
-            else if(deviceColorSettings[deviceIndex].scheme == styleRankColoringSchemeEnum.Scheme4 && deviceColorSettings[deviceIndex].enabled){return 3;}
-            else if(ModConfig.allDevicesConnected == true) {return ((int)ModConfig.defaultColoring) - 1;}
-            else if(deviceColorSettings[deviceIndex].scheme == styleRankColoringSchemeEnum.None || deviceColorSettings[deviceIndex].enabled == false){return -1;}
+            if(deviceColorSettings[deviceIndex].scheme == styleRankColoringSchemeEnum.Scheme1){return 0;}
+            else if(deviceColorSettings[deviceIndex].scheme == styleRankColoringSchemeEnum.Scheme2){return 1;}
+            else if(deviceColorSettings[deviceIndex].scheme == styleRankColoringSchemeEnum.Scheme3){return 2;}
+            else if(deviceColorSettings[deviceIndex].scheme == styleRankColoringSchemeEnum.Scheme4){return 3;}
+            //else if(ModConfig.allDevicesConnected == true) {return ((int)ModConfig.defaultColoring) - 1;}
+            else if(deviceColorSettings[deviceIndex].scheme == styleRankColoringSchemeEnum.Default) {return ((int)ModConfig.defaultColoring) - 2;}
+            else if(deviceColorSettings[deviceIndex].scheme == styleRankColoringSchemeEnum.None) {return -1;} //|| deviceColorSettings[deviceIndex].enabled == false){return -1;}
         }
-        return 0;
+        return -2;
     }
     public static float[] lastFlickerTime = {0f, 0f, 0f, 0f};
     public static List<float>[] flickerIntensity = new List<float>[4];
@@ -432,7 +450,7 @@ public class Plugin : BaseUnityPlugin
     public static float refreshRate = 60f;
     public static float lastTimeRefreshed = 0f;
     public static int framesSinceLastRefreshed = 0;
-    void Update()
+    public static void mainLogic()
     {
         if(modEnabled == false) {return;}
         if(MonoSingleton<StyleHUD>.Instance == null) {return;}
@@ -446,7 +464,10 @@ public class Plugin : BaseUnityPlugin
             connectedSchemes[0] = false; connectedSchemes[1] = false; connectedSchemes[2] = false; connectedSchemes[3] = false;
             for(int i = 0; i < connectedDevices.Count; i++) //not a great way to do this
             {
-                connectedSchemes[getSettingsByDeviceIndex(i)] = true;
+                if(getSettingsByDeviceIndex(i) > 0)
+                {
+                    connectedSchemes[getSettingsByDeviceIndex(i)] = true;
+                }
             }
 
             Permutators.actionLogic();
@@ -462,7 +483,7 @@ public class Plugin : BaseUnityPlugin
                     for(int i = 0; i < colorsBoard[deviceIndex].Count; i++)
                     {
                         int settingsIndex = getSettingsByDeviceIndex(deviceIndex);
-                        if(settingsIndex == -1) {goto noColor;}
+                        if(settingsIndex < 0) {continue;}
                         UnityEngine.Color color = getCurrentColor(settingsIndex, i);
                         Byte r = (Byte)((int)(color.r * 255));
                         Byte g = (Byte)((int)(color.g * 255));
@@ -498,10 +519,14 @@ public class Plugin : BaseUnityPlugin
                     }
                 }
             }
-            noColor:;
+            //noColor:;
 
             framesSinceLastRefreshed = 0;
         }
+    }
+    void Update()
+    {
+        mainLogic();
     }
 }
 

@@ -38,17 +38,27 @@ public class styleRankColoringScheme
     public float property3Float2 = 0f;
     public float property3Float3 = 0f;
 }
-public enum styleRankColoringSchemeEnum {None, Scheme1, Scheme2, Scheme3, Scheme4}
+public enum styleRankColoringSchemeEnum {None, Default, Scheme1, Scheme2, Scheme3, Scheme4}
+public enum forcedStyleRankColoringSchemeEnum {None, Scheme1, Scheme2, Scheme3, Scheme4} //no default option
 public enum colorPropertyEnum {None, RainbowWhole, RainbowFlickerFixed, FlickerFixed, InverseColors, Brighten, CheckerboardInverseColor, CheckerboardColor, Colorfy, SnakeColor, DoubleSnakeColor}
 public class deviceColoringScheme
 {
-    public bool enabled = false;
+    //public bool enabled = false; //not used anymore... now theres no point of this being a class really, oh well.
     public styleRankColoringSchemeEnum scheme = styleRankColoringSchemeEnum.None;
 }
 public class ModConfig
 {
     static string DefaultParentFolder = $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}";
     public static bool gradientizeRankColors = false;
+    public static styleRankColoringSchemeEnum convertForcedToNormalStyleRankEnum(forcedStyleRankColoringSchemeEnum data)
+    {
+        if     (data == forcedStyleRankColoringSchemeEnum.None) {return styleRankColoringSchemeEnum.None;}
+        else if(data == forcedStyleRankColoringSchemeEnum.Scheme1) {return styleRankColoringSchemeEnum.Scheme1;}
+        else if(data == forcedStyleRankColoringSchemeEnum.Scheme2) {return styleRankColoringSchemeEnum.Scheme2;}
+        else if(data == forcedStyleRankColoringSchemeEnum.Scheme3) {return styleRankColoringSchemeEnum.Scheme3;}
+        else if(data == forcedStyleRankColoringSchemeEnum.Scheme4) {return styleRankColoringSchemeEnum.Scheme4;}
+        return styleRankColoringSchemeEnum.None;
+    }
     public static void connectToOpenRGB()
     {
         OpenRgbClient client = null;
@@ -120,6 +130,10 @@ public class ModConfig
         enabledField.onValueChange += (BoolField.BoolValueChangeEvent e) => {Plugin.modEnabled = e.value; division.interactable = e.value;};
         Plugin.modEnabled = enabledField.value; division.interactable = enabledField.value;
 
+        /*BoolField useSecondaryThreadField = new BoolField(config.rootPanel, "Run On Secondary Thread", "useSecondaryThread", true);
+        useSecondaryThreadField.onValueChange += (BoolField.BoolValueChangeEvent e) => {Plugin.useSecondaryThread = e.value;};
+        Plugin.useSecondaryThread = useSecondaryThreadField.value;*/
+
         BoolField autoConnectField = new BoolField(division, "Attempt Autoconnect Periodically", "autoconnectfield", false);
         autoConnectField.onValueChange += (BoolField.BoolValueChangeEvent e) => {autoConnect = e.value;};
         autoConnect = autoConnectField.value;
@@ -170,6 +184,7 @@ public class ModConfig
         else if(pc == PermutatorCause.OnRankLose)       {boolField.interactable = false; boolField.displayName = "N/A"; lengthField.displayName = "Effect Duration";}
         else if(pc == PermutatorCause.OnStyleGain)      {boolField.interactable = true; boolField.displayName = "Scale With Style Gained"; lengthField.displayName = "Effect Duration";}
         else if(pc == PermutatorCause.OnTakeDamage)     {boolField.interactable = true; boolField.displayName = "Scale With Damage Taken"; lengthField.displayName = "Effect Duration";}
+        else if(pc == PermutatorCause.OnTrueStop)       {boolField.interactable = false; boolField.displayName = "N/A"; lengthField.displayName = "Effect Duration";}
         else if(pc == PermutatorCause.Always)           {boolField.interactable = false; boolField.displayName = "N/A"; lengthField.displayName = "Effect Duration";}
     }
 
@@ -360,42 +375,41 @@ public class ModConfig
     public static ConfigDivision enableRestDevicesDivision;
     public static void fillConnectedDevicesPanel(ConfigPanel rootPanel)
     {
-        EnumField<styleRankColoringSchemeEnum> deviceColorField = new EnumField<styleRankColoringSchemeEnum>(rootPanel, "Default Color Scheme", "defaultColorSchemeField", styleRankColoringSchemeEnum.Scheme1);
-        deviceColorField.onValueChange += (EnumField<styleRankColoringSchemeEnum>.EnumValueChangeEvent e) => {defaultColoring = e.value;};
-        defaultColoring = deviceColorField.value;
+        EnumField<forcedStyleRankColoringSchemeEnum> deviceColorField = new EnumField<forcedStyleRankColoringSchemeEnum>(rootPanel, "Default Color Scheme", "defaultColorSchemeField", forcedStyleRankColoringSchemeEnum.Scheme1);
+        deviceColorField.onValueChange += (EnumField<forcedStyleRankColoringSchemeEnum>.EnumValueChangeEvent e) => {defaultColoring = convertForcedToNormalStyleRankEnum(e.value);};
+        defaultColoring = convertForcedToNormalStyleRankEnum(deviceColorField.value);
 
-        BoolField allDevicesConnectedField = new BoolField(rootPanel, "Connect All Devices", "connectAllDevicesField", true);
+        //BoolField allDevicesConnectedField = new BoolField(rootPanel, "Connect All Devices", "connectAllDevicesField", true);
         enableRestDevicesDivision = new ConfigDivision(rootPanel, "enableRestDevicesDivision");
-        allDevicesConnectedField.onValueChange += (BoolField.BoolValueChangeEvent e) => {allDevicesConnected = e.value;}; //enableRestDevicesDivision.interactable = !e.value;};
-        allDevicesConnected = allDevicesConnectedField.value; //enableRestDevicesDivision.interactable = !allDevicesConnectedField.value;
+        //allDevicesConnectedField.onValueChange += (BoolField.BoolValueChangeEvent e) => {allDevicesConnected = e.value;}; //enableRestDevicesDivision.interactable = !e.value;};
+        //allDevicesConnected = allDevicesConnectedField.value; //enableRestDevicesDivision.interactable = !allDevicesConnectedField.value;
         foreach(Device d in Plugin.connectedDevices)
         {
             int i = d.Index;
             ConfigHeader nameHeader = new ConfigHeader(enableRestDevicesDivision, d.Name, 18);
-            ConfigPanel panel = new ConfigPanel(enableRestDevicesDivision, "Device " + i, "devicepanel" + i);
+            ConfigPanel panel = new ConfigPanel(enableRestDevicesDivision, "Device " + i + " Settings", "devicepanel" + i);
             createConnectedDevicePanel(panel, i);
             deviceConfigPanels[i] = panel;
             deviceConfigHeaders[i] = nameHeader;
         }
     }
-    public static bool allDevicesConnected = false;
+    //public static bool allDevicesConnected = false;
     public static styleRankColoringSchemeEnum defaultColoring = styleRankColoringSchemeEnum.None;
     public static void checkForDeviceColorSettingsOfIExists(int i)
     {
-        if(!Plugin.deviceColorSettings.ContainsKey(i))
+        if(Plugin.deviceColorSettings.ContainsKey(i) == false)
         {
             Plugin.deviceColorSettings[i] = new deviceColoringScheme();
         }
     }
     public static void createConnectedDevicePanel(ConfigPanel rootPanel, int index)
     {
-
         checkForDeviceColorSettingsOfIExists(index);
-        BoolField enabledField = new BoolField(rootPanel, "Enabled for this device", "deviceEnabledField", false);
+        /*BoolField enabledField = new BoolField(rootPanel, "Enabled for this device", "deviceEnabledField" + index, false);
         enabledField.onValueChange += (BoolField.BoolValueChangeEvent e) => {checkForDeviceColorSettingsOfIExists(index); Plugin.deviceColorSettings[index].enabled = e.value;};
-        Plugin.deviceColorSettings[index].enabled = enabledField.value;
+        Plugin.deviceColorSettings[index].enabled = enabledField.value;*/
 
-        EnumField<styleRankColoringSchemeEnum> deviceColorField = new EnumField<styleRankColoringSchemeEnum>(rootPanel, "Device Color Scheme", "deviceColorSchemeField", styleRankColoringSchemeEnum.None);
+        EnumField<styleRankColoringSchemeEnum> deviceColorField = new EnumField<styleRankColoringSchemeEnum>(rootPanel, "Device Color Scheme", "deviceColorSchemeField" + index, styleRankColoringSchemeEnum.Default);
         deviceColorField.onValueChange += (EnumField<styleRankColoringSchemeEnum>.EnumValueChangeEvent e) => {checkForDeviceColorSettingsOfIExists(index); Plugin.deviceColorSettings[index].scheme = e.value;};
         Plugin.deviceColorSettings[index].scheme = deviceColorField.value;
     }
@@ -427,8 +441,10 @@ public class ModConfig
             }
             else
             {
+                Plugin.logger.LogInfo(d.ToString());
+                //Plugin.logger.LogInfo(d.Name);
                 ConfigHeader nameHeader = new ConfigHeader(enableRestDevicesDivision, d.Name, 18);
-                ConfigPanel panel = new ConfigPanel(enableRestDevicesDivision, "Device " + d.Index, "devicepanel" + d.Index);
+                ConfigPanel panel = new ConfigPanel(enableRestDevicesDivision, "Device " + d.Index + " Settings", "devicepanel" + d.Index);
                 createConnectedDevicePanel(panel, d.Index);
                 deviceConfigPanels[d.Index] = panel;
                 deviceConfigHeaders[d.Index] = nameHeader;
